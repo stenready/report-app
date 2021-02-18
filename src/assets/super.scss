@@ -1,0 +1,19 @@
+.d-flex {
+  display: flex;
+}
+
+.n-margin {
+  margin: 0 !important;
+}
+
+.js-c {
+  justify-content: center;
+}
+
+.btn-custom {
+  background: #ef5350;
+  margin: 5px 5px;
+  &:hover {
+    background: #e57373;
+  }
+}
