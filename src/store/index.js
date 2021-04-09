@@ -6,8 +6,8 @@ import report from "./report";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
-  actions: {},
-  modules: {report},
+	state: {},
+	mutations: {},
+	actions: {},
+	modules: { report },
 });

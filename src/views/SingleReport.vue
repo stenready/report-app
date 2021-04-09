@@ -158,7 +158,7 @@
                   >
                   <a
                     href="#"
-                    @click.prevent="canselEditHandler"
+                    @click.prevent="cancelEditHandler"
                     class="waves-effect waves-light btn btn-custom"
                     >Отменить редактирование</a
                   >
@@ -188,7 +188,7 @@
 <script>
 import { required, minLength } from "vuelidate/lib/validators";
 import DatePicker from "vue2-datepicker";
-import transformTimeFiunc from "@/utils/transformTimeFiunc.js";
+import transformTimeFunc from "@/utils/transformTimeFunc.js";
 import { mapState } from "vuex";
 export default {
   components: { DatePicker },
@@ -202,6 +202,14 @@ export default {
       reportName: "",
       description: "",
     };
+  },
+  computed: {
+    ...mapState({
+      reportsData: (state) => state.report.reportsData,
+    }),
+    findOne() {
+      return this.reportsData.find((el) => el.mId === +this.$route.query.edit);
+    },
   },
   validations: {
     time: {
@@ -266,7 +274,7 @@ export default {
         }
       });
     },
-    canselEditHandler() {
+    cancelEditHandler() {
       this.$swal({
         title: "Вы уверены что хотите отменить редактирование?",
         text: this.findOne.reportName,
@@ -294,7 +302,7 @@ export default {
           mId: Date.now(),
           userName: this.name,
           reportName: this.reportName,
-          reportDate: transformTimeFiunc(this.time),
+          reportDate: transformTimeFunc(this.time),
           time: this.time,
           report: this.description,
           status: "pending",
@@ -329,13 +337,12 @@ export default {
           mId: this.findOne.mId,
           userName: this.name,
           reportName: this.reportName,
-          reportDate: transformTimeFiunc(this.time),
+          reportDate: transformTimeFunc(this.time),
           time: this.time,
           report: this.description,
           status: "pending",
         };
 
-        // console.log("stas", newEditObject);
         this.$store.dispatch("editReport", newEditObject);
         this.$toast.open({
           message: "Ваш отчёт успешно изменён!",
@@ -353,31 +360,38 @@ export default {
       if (date > Date.now()) return true;
       return false;
     },
-  },
-  computed: {
-    ...mapState({
-      reportsData: (state) => state.report.reportsData,
-    }),
-    findOne() {
-      return this.reportsData.find((el) => el.mId === +this.$route.query.edit);
+    clearDataForm() {
+      this.name = this.reportName = this.description = "";
+      this.time = Date.now();
+    },
+    setFormDataByUpdate(id) {
+      const findOne = this.reportsData.find((el) => el.mId === +id);
+      if (findOne) {
+        this.name = findOne.userName;
+        this.nameFiledIsFocus = true;
+
+        this.reportNameFildFocus = true;
+        this.reportName = findOne.reportName;
+
+        this.description = findOne.report;
+        this.descriptionFiledFocus = true;
+
+        this.time = findOne.time;
+      }
     },
   },
   mounted() {
-    const findOne = this.reportsData.find(
-      (el) => el.mId === +this.$route.query.edit
-    );
-    if (findOne) {
-      this.name = findOne.userName;
-      this.nameFiledIsFocus = true;
-
-      this.reportNameFildFocus = true;
-      this.reportName = findOne.reportName;
-
-      this.description = findOne.report;
-      this.descriptionFiledFocus = true;
-
-      this.time = findOne.time;
-    }
+    this.setFormDataByUpdate(this.$route.query.edit);
+  },
+  watch: {
+    $route(r) {
+      if (r.query.edit) {
+        this.setFormDataByUpdate(r.query.edit);
+      }
+      if (r.query.hasOwnProperty("create")) {
+        this.clearDataForm();
+      }
+    },
   },
 };
 </script>

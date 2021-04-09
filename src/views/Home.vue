@@ -53,7 +53,6 @@ import { mapState } from "vuex";
 
 export default {
   name: "Home",
-  components: {},
   methods: {
     removeReport(report) {
       this.$swal({
@@ -63,20 +62,18 @@ export default {
         showCancelButton: true,
         confirmButtonText: "Да удалить",
         cancelButtonText: "Нет я передумал(а)",
-      })
-        .then((result) => {
-          if (result.isConfirmed) {
-            this.$toast.open({
-              message: "Отчёт успешно удалён",
-              type: "success",
-              position: "top-right",
-              duration: 1200,
-            });
-            this.$store.dispatch("removeReport", report);
-          } else {
-          }
-        })
-        .catch((err) => {});
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$toast.open({
+            message: "Отчёт успешно удалён",
+            type: "success",
+            position: "top-right",
+            duration: 1200,
+          });
+          this.$store.dispatch("removeReport", report);
+        } else {
+        }
+      });
     },
     addSecsess(report) {
       this.$swal({
@@ -86,20 +83,18 @@ export default {
         showCancelButton: true,
         confirmButtonText: "Принять",
         cancelButtonText: "Отмена",
-      })
-        .then((res) => {
-          if (res.isConfirmed) {
-            report.status = "done";
-            this.$store.dispatch("changeStatusReport", report);
-            this.$toast.open({
-              message: "Отчёт успешно принят",
-              type: "success",
-              position: "top-right",
-              duration: 1200,
-            });
-          }
-        })
-        .catch((err) => {});
+      }).then((res) => {
+        if (res.isConfirmed) {
+          report.status = "done";
+          this.$store.dispatch("changeStatusReport", report);
+          this.$toast.open({
+            message: "Отчёт успешно принят",
+            type: "success",
+            position: "top-right",
+            duration: 1200,
+          });
+        }
+      });
     },
   },
   computed: {
